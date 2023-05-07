@@ -13,7 +13,7 @@ Usage: make <command>
 
 Available commands are:
   help                                   Display this help section
-  shell                                  Start a dev shell in docker/podman container
+  shell                                  Start a dev shell in a docker/podman container
   run                                    Start dev server
   lint                                   Lint project
   test                                   Run tests

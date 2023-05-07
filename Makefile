@@ -11,28 +11,32 @@ help: ## Display this help section
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-38s %s\n", $$1, $$2}' ${MAKEFILE_LIST}
 .DEFAULT_GOAL := help
 
-DOCKER_CMD := podman run --rm -it -v .:/opt/app:z -w /opt/app -p 8080:8080 node:latest
+DOCKER := podman
+IMAGE := node:latest
+MOUNT := .:/opt/app:z
+DIR := /opt/app
+PORT := 8080:8080
 
 .PHONY: shell
-shell: ## Start a dev shell in docker/podman container
-	$(DOCKER_CMD) bash
+shell: ## Start a dev shell in a docker/podman container
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) -p $(PORT) $(IMAGE) bash
 
 .PHONY: run
 run: ## Start dev server
-	$(DOCKER_CMD) npm run dev
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) -p $(PORT) $(IMAGE) npm run dev
 
 .PHONY: lint
 lint: ## Lint project
-	$(DOCKER_CMD) npm run lint
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) $(IMAGE) npm run lint
 
 .PHONY: test
 test: ## Run tests
-	$(DOCKER_CMD) npm run test
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) $(IMAGE) npm run test
 
 .PHONY: build
 build: ## Build app for production
-	$(DOCKER_CMD) npm run build
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) $(IMAGE) npm run build
 
 .PHONY: preview
 preview: ## Preview production app locally
-	$(DOCKER_CMD) npm run preview
+	$(DOCKER) run --rm -it -v $(MOUNT) -w $(DIR) $(IMAGE) npm run preview
